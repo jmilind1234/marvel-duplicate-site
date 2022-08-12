@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+    <title>SUPER-HERO PAGE</title>
+    <link rel="stylesheet" type="text/css" href="superHero.css">
+</HEAD>
+
+<BODY>
+    <div id="nav">
+        <a href="Favorites.html">Favorites</a>
+        <img src="marvel_logo.png" id="logo">
+    </div>
+    <div id="super-hero-image">
+
+    </div>
+    <H1 id="super-hero-name"></H1>
+    <div id="main-container">
+        <div id="comics-section">
+            <div id="comics-section-title">
+                <h1 id="main-comic-section-title"> COMICS</h1>
+            </div>
+
+            <ul id="super-hero-comic-list" style="list-style-type:none">
+
+            </ul>
+        </div>
+        <div id="events-section">
+            <div id="events-section-title">
+                <h1 id="main-event-section-title">EVENTS</h1>
+            </div>
+
+            <ul id="super-hero-event-list" style="list-style-type:none">
+
+            </ul>
+        </div>
+        <div id="series-section">
+            <div id="series-section-title">
+                <h1 id="main-series-section-title">SERIES</h1>
+            </div>
+
+            <ul id="super-hero-series-list" style="list-style-type:none">
+
+            </ul>
+        </div>
+        <div id="stories-section">
+            <div id="stories-section-title">
+                <h1 id="main-stories-section-title">STORIES</h1>
+            </div>
+
+            <ul id="super-hero-stories-list" style="list-style-type:none">
+
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var characterDetailUrl = localStorage.getItem("RequiredURL");
+        console.log(characterDetailUrl);
+        fetch(characterDetailUrl)
+            .then(res => res.json())
+            .then(data => {
+                console.log("data is ");
+                console.log(data);
+                var character = data.data.results[0];
+                console.log(character.series.items);
+                var bgImg = document.getElementById("super-hero-image");
+                var superName = document.getElementById("super-hero-name");
+                superName.innerText = character.name.toUpperCase();
+                bgImg.style.backgroundImage = "url(" + character.thumbnail.path + '.' + character.thumbnail.extension + ")";
+                var comics = character.comics.items;
+                var events = character.events.items;
+                var series = character.series.items;
+                var i;
+                var comicUL = document.getElementById("super-hero-comic-list");
+                for (i = 0; i < comics.length; i++) {
+                    var li = document.createElement("li");
+                    var txtNode = document.createTextNode(character.comics.items[i].name);
+                    li.appendChild(txtNode);
+                    comicUL.appendChild(li);
+                }
+                var eventUL = document.getElementById("super-hero-event-list");
+                for (i = 0; i < events.length; i++) {
+                    var li = document.createElement("li");
+                    var txtNode = document.createTextNode(character.events.items[i].name);
+                    li.appendChild(txtNode);
+                    eventUL.appendChild(li);
+                }
+                var seriesUL = document.getElementById("super-hero-series-list");
+                for (i = 0; i < series.length; i++) {
+                    var li = document.createElement("li");
+                    var txtNode = document.createTextNode(character.series.items[i].name);
+                    li.appendChild(txtNode);
+                    seriesUL.appendChild(li);
+                }
+                var storiesUL = document.getElementById("super-hero-stories-list");
+                for (i = 0; i < series.length; i++) {
+                    var li = document.createElement("li");
+                    var txtNode = document.createTextNode(character.stories.items[i].name);
+                    li.appendChild(txtNode);
+                    storiesUL.appendChild(li);
+                }
+            })
+    </script>
+</BODY>
+
+</HTML>

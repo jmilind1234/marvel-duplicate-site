@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SUPER-HEROES-LIST</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div id="nav">
+        <a href="Favorites.html">Favorites</a>
+        <img src="marvel_logo.png" id="logo">
+    </div>
+    <div id="Actor-Search-Panel">
+        <input placeholder="Search......................."  type="search" id="search-box" onkeyup="filteringFunctionality()">
+    </div>
+    <div id="super-hero-container">
+        <ul id="super-hero-list" style="list-style-type:none">
+
+        </ul>
+    </div>
+    <!-- <div id="footer">
+        <div id="footer-subSection1">
+        </div>
+        <div id="footer-subSection2">
+
+        </div>
+        <div id="footer-subSection3">
+
+        </div>
+            <h2><i class="fa fa-id-card" aria-hidden="true"></i>CONTACT</h2>
+        </div> -->
+    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script>
+        class favoriteHero {
+            constructor(id, groupId, memberId, url) {
+                this.id = id;
+                this.groupId = groupId;
+                this.memberId = memberId;
+                this.url = url;
+            }
+        }
+        if(localStorage.getItem("Favorites")===null){
+            localStorage.setItem("Favorites", JSON.stringify(new Array()));
+        }
+        var superheroes = [];
+        var input = document.getElementById("search-box");
+        var timestamp = Date.now();
+        timestamp = timestamp.toString();
+        var mainUrl = "http://gateway.marvel.com/v1/public/comics?ts=" + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3");
+        fetch(mainUrl)
+            .then(res => res.json())
+            .then(data => {
+                console.log("results");
+                console.log(data.data.results);
+                var length = data.data.results.length;
+                var i;
+                for (i = 0; i < length; i++) {
+                    var object = data.data.results[i];
+                    var characters = data.data.results[i].characters.available;
+                    if (characters != 0) {
+                        var j;
+                        for (j = 0; j < characters; j++) {
+                            var superHeroName = data.data.results[i].characters.items[j].name.toUpperCase();
+                            if (superheroes.indexOf(superHeroName) === -1) {
+                                //if superhero is not registered only
+                                superheroes.push(superHeroName);
+                                // console.log(data.data.results[i].characters.items[j].name);
+                                var li = document.createElement("li");
+                                var a = document.createElement("a");
+                                a.setAttribute("href", "superHero.html");
+                                var superHeroName = document.createTextNode(data.data.results[i].characters.items[j].name.toUpperCase());
+                                a.appendChild(superHeroName);
+                                var addBtn = document.createElement("button");
+                                var delBtn = document.createElement("button");
+                                addBtn.appendChild(document.createTextNode("Add"));
+                                delBtn.appendChild(document.createTextNode("Delete"));
+                                delBtn.setAttribute("class", "delBtn");
+                                addBtn.setAttribute("class", "addBtn");
+                                li.appendChild(addBtn);
+                                li.appendChild(delBtn);
+                                // data.data.results[i].id
+                                li.setAttribute("id", i.toString());
+                                li.setAttribute("groupId", data.data.results[i].id.toString());
+                                li.setAttribute("memberId", j);
+                                li.setAttribute("class", "super-hero-item");
+                                var ul = document.getElementById("super-hero-list");
+                                li.appendChild(a);
+                                ul.appendChild(li);
+                            }
+                        }
+                    }
+                    // console.log(object + "Available characters "+characters) ;
+                }
+                function goToSuperHeroPage(event) {
+                    console.log(event.target.parentElement);
+                    var id = event.target.parentElement.id;
+                    var MemberId = event.target.parentElement.getAttribute("memberid");
+                    //  console.log(event.target);
+                    console.log("id is "+id);
+                    console.log("Member ID IS"+ MemberId);
+                    localStorage.setItem("RequiredURL", data.data.results[id].characters.items[MemberId].resourceURI + "?ts=" + + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3"));
+                }
+
+                function addTofavorites(event) {
+                    console.log("Parent Element is ");
+                    console.log(event.target.parentElement);
+                    var id = event.target.parentElement.id;
+                    var MemberId = event.target.parentElement.getAttribute("memberid");
+                    // console.log("MemberId is "+MemberId);
+                    var groupId = event.target.parentElement.getAttribute("groupid");
+                    var favCharacter = new favoriteHero(id, groupId, MemberId, data.data.results[id].characters.items[MemberId].resourceURI + "?ts=" + + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3"));
+                    var favArray = JSON.parse(localStorage.getItem("Favorites"));
+                    var i;
+                    var flag=0;
+                    for(i=0;i<favArray.length;i++){
+                        if(favCharacter.id === favArray[i].id && favCharacter.groupId === favArray[i].groupId && favCharacter.memberId === favArray[i].memberId){
+                            flag=1;
+                            console.log("true");
+                            break;
+                        }
+                    }
+                    if(flag === 0){
+                        favArray.push(favCharacter);
+                    }
+                    console.log("favorite array is");
+                    console.log(favArray);
+                    localStorage.setItem("Favorites", JSON.stringify(favArray));
+                }
+
+                function deleteFromFavorites(event){
+                    var id = event.target.parentElement.id;
+                    var MemberId = event.target.parentElement.getAttribute("memberid");
+                    var groupId = event.target.parentElement.getAttribute("groupid");
+                    var favCharacter = new favoriteHero(id, groupId, MemberId, data.data.results[id].characters.items[MemberId].resourceURI + "?ts=" + + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3"));
+                    var favArray = JSON.parse(localStorage.getItem("Favorites"));
+                    var i;
+                    for(i=0;i<favArray.length;i++){
+                        if(favCharacter.id === favArray[i].id && favCharacter.groupId === favArray[i].groupId && favCharacter.memberId === favArray[i].memberId){
+                           favArray.splice(i,1);
+                           break;
+                        }
+                    }
+                    localStorage.setItem("Favorites", JSON.stringify(favArray));
+                }
+
+                var addbtns = document.getElementsByClassName("addBtn");
+                var delbtns = document.getElementsByClassName("delBtn");
+                for (var m = 0; m < addbtns.length; m++) {
+                    addbtns[m].onclick = addTofavorites;
+                }
+                for (var m = 0; m < delbtns.length; m++) {
+                    delbtns[m].onclick = deleteFromFavorites;
+                }
+                var listItems = document.getElementsByTagName("li");
+                var k;
+                for (k = 0; k < listItems.length; k++) {
+                    listItems[k].onclick = goToSuperHeroPage;
+                }
+                // console.log(length);            
+            });
+        function filteringFunctionality() {
+            var filter = input.value;
+            var filter = filter.toUpperCase();
+            var li = document.getElementsByTagName("li");
+            var i;
+            if (filter.length !== 0) {
+                for (i = 0; i < li.length; i++) {
+                    var mainText = li[i].innerText;
+                    if (mainText.indexOf(filter) > -1) {
+                        li[i].style.display = "";
+                    }
+                    else {
+                        li[i].style.display = "none";
+                    }
+                }
+            }
+            if (filter.length === 0) {
+                for (i = 0; i < li.length; i++) {
+                    var mainText = li[i].innerText;
+                    li[i].style.display = "";
+                }
+            }
+        }
+        // console.log(mainUrl);
+    </script>
+</body>
+
+</html>

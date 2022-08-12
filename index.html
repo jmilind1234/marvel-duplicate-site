@@ -57,7 +57,7 @@
         var input = document.getElementById("search-box");
         var timestamp = Date.now();
         timestamp = timestamp.toString();
-        var mainUrl = "http://gateway.marvel.com/v1/public/comics?ts=" + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3");
+        var mainUrl = "https://gateway.marvel.com/v1/public/comics?ts=" + timestamp + "&apikey=" + "9b8f634e69e9f80b7fc4f285e049c1a3" + "&hash=" + CryptoJS.MD5(timestamp + "d542da31b517eb37322d6137b9c8e250ff31404b" + "9b8f634e69e9f80b7fc4f285e049c1a3");
         fetch(mainUrl)
             .then(res => res.json())
             .then(data => {
